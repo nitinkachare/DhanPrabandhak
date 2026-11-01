@@ -1,0 +1,257 @@
+{
+  "entities": {
+    "UserProfile": {
+      "title": "UserProfile",
+      "description": "User profile and preferences",
+      "type": "object",
+      "properties": {
+        "userId": {
+          "type": "string",
+          "description": "The unique Firebase Auth UID of the user"
+        },
+        "email": {
+          "type": "string",
+          "description": "User email address if available"
+        },
+        "language": {
+          "type": "string",
+          "description": "User preferred language code"
+        },
+        "currencyCode": {
+          "type": "string",
+          "description": "Default currency code (e.g. INR, USD)"
+        },
+        "updatedAt": {
+          "type": "number",
+          "description": "Timestamp of last profile update"
+        }
+      },
+      "required": ["userId"]
+    },
+    "Account": {
+      "title": "Account",
+      "description": "Financial account like Cash, Bank, or Card",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique account ID"
+        },
+        "name": {
+          "type": "string",
+          "description": "Account name"
+        },
+        "nameMr": {
+          "type": "string",
+          "description": "Account name in Marathi"
+        },
+        "type": {
+          "type": "string",
+          "description": "Account type classification",
+          "enum": ["cash", "bank", "card", "savings", "investment", "other"]
+        },
+        "initialBalance": {
+          "type": "number",
+          "description": "Starting balance of the account"
+        },
+        "color": {
+          "type": "string",
+          "description": "Hex color or tailwind color code"
+        },
+        "icon": {
+          "type": "string",
+          "description": "Icon identifier"
+        }
+      },
+      "required": ["id", "name", "type", "initialBalance"]
+    },
+    "Category": {
+      "title": "Category",
+      "description": "Transaction category classification",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique category ID"
+        },
+        "name": {
+          "type": "string",
+          "description": "Category name"
+        },
+        "nameMr": {
+          "type": "string",
+          "description": "Category name in Marathi"
+        },
+        "type": {
+          "type": "string",
+          "description": "Category type: expense or income",
+          "enum": ["expense", "income"]
+        },
+        "icon": {
+          "type": "string",
+          "description": "Icon name"
+        },
+        "color": {
+          "type": "string",
+          "description": "Hex color code"
+        }
+      },
+      "required": ["id", "name", "type"]
+    },
+    "Transaction": {
+      "title": "Transaction",
+      "description": "Expense, Income, or Transfer transaction",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique transaction ID"
+        },
+        "type": {
+          "type": "string",
+          "description": "Transaction type",
+          "enum": ["expense", "income", "transfer"]
+        },
+        "amount": {
+          "type": "number",
+          "description": "Transaction monetary amount"
+        },
+        "date": {
+          "type": "string",
+          "description": "Date string in YYYY-MM-DD format"
+        },
+        "time": {
+          "type": "string",
+          "description": "Time string in HH:mm format"
+        },
+        "accountId": {
+          "type": "string",
+          "description": "Source account ID"
+        },
+        "toAccountId": {
+          "type": "string",
+          "description": "Destination account ID for transfer type"
+        },
+        "categoryId": {
+          "type": "string",
+          "description": "Category ID"
+        },
+        "note": {
+          "type": "string",
+          "description": "User notes or description"
+        },
+        "payee": {
+          "type": "string",
+          "description": "Payee or payer name"
+        },
+        "receiptImage": {
+          "type": "string",
+          "description": "Receipt image reference or data"
+        },
+        "createdAt": {
+          "type": "number",
+          "description": "Creation timestamp in milliseconds"
+        }
+      },
+      "required": ["id", "type", "amount", "date", "accountId", "categoryId", "createdAt"]
+    },
+    "Budget": {
+      "title": "Budget",
+      "description": "Monthly budget limit per category",
+      "type": "object",
+      "properties": {
+        "categoryId": {
+          "type": "string",
+          "description": "Target category ID"
+        },
+        "amount": {
+          "type": "number",
+          "description": "Budget limit amount"
+        }
+      },
+      "required": ["categoryId", "amount"]
+    },
+    "DebtRecord": {
+      "title": "DebtRecord",
+      "description": "Debt or loan tracking record",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique debt ID"
+        },
+        "type": {
+          "type": "string",
+          "description": "To receive (lent) or to pay (borrowed)",
+          "enum": ["to_receive", "to_pay"]
+        },
+        "personName": {
+          "type": "string",
+          "description": "Name of the person"
+        },
+        "amount": {
+          "type": "number",
+          "description": "Debt amount"
+        },
+        "dueDate": {
+          "type": "string",
+          "description": "Due date in YYYY-MM-DD format"
+        },
+        "note": {
+          "type": "string",
+          "description": "Additional notes"
+        },
+        "isSettled": {
+          "type": "boolean",
+          "description": "Whether the debt is settled"
+        },
+        "createdAt": {
+          "type": "number",
+          "description": "Creation timestamp in milliseconds"
+        }
+      },
+      "required": ["id", "type", "personName", "amount", "isSettled", "createdAt"]
+    },
+    "TestConnection": {
+      "title": "TestConnection",
+      "description": "Document for testing Firestore connection",
+      "type": "object",
+      "properties": {
+        "status": {
+          "type": "string",
+          "description": "Status string"
+        }
+      }
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": "UserProfile",
+      "description": "User profile document"
+    },
+    "/users/{userId}/accounts/{accountId}": {
+      "schema": "Account",
+      "description": "User financial accounts"
+    },
+    "/users/{userId}/categories/{categoryId}": {
+      "schema": "Category",
+      "description": "User transaction categories"
+    },
+    "/users/{userId}/transactions/{transactionId}": {
+      "schema": "Transaction",
+      "description": "User expense and income transactions"
+    },
+    "/users/{userId}/budgets/{budgetId}": {
+      "schema": "Budget",
+      "description": "User monthly category budgets"
+    },
+    "/users/{userId}/debts/{debtId}": {
+      "schema": "DebtRecord",
+      "description": "User debts and loans"
+    },
+    "/test/{testId}": {
+      "schema": "TestConnection",
+      "description": "Health check document"
+    }
+  }
+}

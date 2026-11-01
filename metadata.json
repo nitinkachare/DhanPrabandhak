@@ -1,0 +1,6 @@
+{
+  "name": "DhanPrabandhak - Money Manager & Budget",
+  "description": "100% lifetime free expense tracker, budget planner, and double-entry money manager inspired by Realbyte Money Manager with Marathi and English support.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

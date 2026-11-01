@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#e53935" />
+      <stop offset="100%" stop-color="#b71c1c" />
+    </linearGradient>
+    <filter id="shadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="8" stdDeviation="12" flood-color="#000000" flood-opacity="0.25" />
+    </filter>
+  </defs>
+  <!-- Background with squircle radius -->
+  <rect width="512" height="512" rx="120" fill="url(#bgGrad)" />
+  
+  <!-- Subtle Inner Card -->
+  <rect x="56" y="56" width="400" height="400" rx="90" fill="#ffffff" fill-opacity="0.08" stroke="#ffffff" stroke-width="4" stroke-opacity="0.2" />
+
+  <!-- Ledger / Wallet Center Emblem -->
+  <g filter="url(#shadow)">
+    <!-- White Circle Surface -->
+    <circle cx="256" cy="256" r="145" fill="#ffffff" />
+    <!-- Signature Red Rupee Symbol & Bookkeeping Mark -->
+    <path d="M210 180 h92 M210 216 h92 M210 180 v145 M256 180 c35 0 55 18 55 42 c0 25 -20 42 -55 42 h-46 l75 88" fill="none" stroke="#d32f2f" stroke-width="26" stroke-linecap="round" stroke-linejoin="round" />
+  </g>
+</svg>

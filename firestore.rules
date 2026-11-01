@@ -1,0 +1,99 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    function isUser(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+
+    function isValidId(id) {
+      return id is string && id.size() > 0 && id.size() <= 64 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    // Health check endpoint for test connection
+    match /test/{testId} {
+      allow read: if true;
+      allow write: if false;
+    }
+
+    // User Profile Document
+    match /users/{userId} {
+      allow get: if isUser(userId) && isValidId(userId);
+      allow list: if false; // Disallow querying across all users
+      allow create, update: if isUser(userId) && isValidId(userId);
+      allow delete: if isUser(userId) && isValidId(userId);
+
+      // Financial Accounts subcollection
+      match /accounts/{accountId} {
+        allow get: if isUser(userId) && isValidId(accountId);
+        allow list: if isUser(userId);
+        allow create, update: if isUser(userId) && isValidId(accountId)
+          && request.resource.data.id is string
+          && request.resource.data.name is string
+          && request.resource.data.name.size() > 0
+          && request.resource.data.name.size() <= 100
+          && request.resource.data.type is string
+          && request.resource.data.initialBalance is number;
+        allow delete: if isUser(userId) && isValidId(accountId);
+      }
+
+      // Categories subcollection
+      match /categories/{categoryId} {
+        allow get: if isUser(userId) && isValidId(categoryId);
+        allow list: if isUser(userId);
+        allow create, update: if isUser(userId) && isValidId(categoryId)
+          && request.resource.data.id is string
+          && request.resource.data.name is string
+          && request.resource.data.name.size() > 0
+          && request.resource.data.name.size() <= 100
+          && request.resource.data.type in ['expense', 'income'];
+        allow delete: if isUser(userId) && isValidId(categoryId);
+      }
+
+      // Transactions subcollection
+      match /transactions/{transactionId} {
+        allow get: if isUser(userId) && isValidId(transactionId);
+        allow list: if isUser(userId);
+        allow create, update: if isUser(userId) && isValidId(transactionId)
+          && request.resource.data.id is string
+          && request.resource.data.type in ['expense', 'income', 'transfer']
+          && request.resource.data.amount is number
+          && request.resource.data.amount >= 0
+          && request.resource.data.date is string
+          && request.resource.data.accountId is string
+          && request.resource.data.categoryId is string;
+        allow delete: if isUser(userId) && isValidId(transactionId);
+      }
+
+      // Budgets subcollection
+      match /budgets/{budgetId} {
+        allow get: if isUser(userId) && isValidId(budgetId);
+        allow list: if isUser(userId);
+        allow create, update: if isUser(userId) && isValidId(budgetId)
+          && request.resource.data.categoryId is string
+          && request.resource.data.amount is number
+          && request.resource.data.amount >= 0;
+        allow delete: if isUser(userId) && isValidId(budgetId);
+      }
+
+      // Debts and Loans subcollection
+      match /debts/{debtId} {
+        allow get: if isUser(userId) && isValidId(debtId);
+        allow list: if isUser(userId);
+        allow create, update: if isUser(userId) && isValidId(debtId)
+          && request.resource.data.id is string
+          && request.resource.data.type in ['to_receive', 'to_pay']
+          && request.resource.data.personName is string
+          && request.resource.data.personName.size() > 0
+          && request.resource.data.amount is number
+          && request.resource.data.amount >= 0
+          && request.resource.data.isSettled is bool;
+        allow delete: if isUser(userId) && isValidId(debtId);
+      }
+    }
+  }
+}
